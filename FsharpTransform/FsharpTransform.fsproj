@@ -55,8 +55,10 @@
     <Compile Include="Parser.fs" />
     <Compile Include="Transform.fs" />
     <None Include="packages.config" />
-    <Compile Include="Script.fsx" />
     <None Include="docs\Readme.md" />
+    <None Include="Script.fsx" />
+    <None Include="transformConfig.json" />
+    <None Include="input.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="docs\" />

@@ -36,6 +36,10 @@ module Parser =
  let str s = pstring s
  let quoteString s = between (str "\"") (str "\"") (str s)
 
+ let listBetweenStrings sOpen sClose pElement f =
+     between (str sOpen) (str sClose)
+             (ws >>. sepBy (pElement .>> ws) (str "," >>. ws) |>> f)
+
  // Code from the FParsec tutorial to parse a string literal
  let stringLiteral =
      let escape =  anyOf "\"\\/bfnrt"
@@ -62,6 +66,8 @@ module Parser =
      between (str "\"") (str "\"")
              (stringsSepBy normalCharSnippet escapedCharSnippet)
  
+
+ // Custom language using Json format 
  // Create the parsers from the bottom up
  let psource src = quoteString src >>. ws >>. str ":" >>. (ws >>. stringLiteral) |>> property
  let psource1 = psource "src1"
@@ -70,9 +76,53 @@ module Parser =
  let ppropertylist = between (str "[") (str "]") (ws >>. sepBy (pproperty .>> ws) (str "," >>. ws) |>> configuration)
  let pdocument = str "{" >>. ws >>. quoteString "transform" >>. ws >>. str ":" >>. ws >>. (ppropertylist) .>> ws .>> str "}" .>> ws .>> eof |>> document
 
- // Here to remove type inference issues
- let private test p str =
-     match run p str with
-     | Success(result, _, _)   -> printfn "Success: %A" result
-     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
- let private value = test pdocument
+ let parseConfiguration filePath encoding = 
+  runParserOnString pdocument () filePath (System.IO.File.ReadAllText(filePath, encoding))
+
+ // End of Custom language parser
+
+ // Json parser using FParsec tutorial
+ let pjvalue, pjvalueref = createParserForwardedToRef<Json, unit>()
+
+ // Parse null values in the Json file
+ let pjnull = stringReturn "null" JNull
+
+ // Parse true values in the Json file
+ let pjtrue = stringReturn "true" (JBool true)
+
+ // Parse false values in the Json file
+ let pjfalse = stringReturn "false" (JBool false)
+
+ // Parse strings in the Json file
+ let pjstring = stringLiteral |>> JString
+
+ // Parse numbers in the json file
+ let pjnumber = pfloat |>> JNumber
+
+ // Parse a Json list
+ let pjlist = listBetweenStrings "[" "]" pjvalue JList
+
+ // Parse a key value object in the json file
+ let pkeyvalue = stringLiteral .>>. (ws >>. str ":" >>. ws >>. pjvalue)
+
+ // Parse a Json object in the Json file
+ let pjobject = listBetweenStrings "{" "}" pkeyvalue (Map.ofList >> JObject)
+
+ pjvalueref := choice 
+     [
+     pjnull 
+     pjtrue
+     pjfalse
+     pjnumber
+     pjstring
+     pjlist
+     pjobject
+     ]
+
+ let pjson = ws >>. pjvalue >>. ws >>. eof
+
+ let parseJsonString str = run pjson str
+
+ let parseJsonFile filePath encoding = 
+  runParserOnString pjson () filePath (System.IO.File.ReadAllText(filePath, encoding))
+ // End of Json parser

@@ -29,15 +29,24 @@
 namespace FsharpTransform
 
 module AST = 
- type Property = 
- | Property of string
- type PropertyTransform = 
- | PropertyTransform of (Property * Property)
- type Transformation = 
- | Transformation of PropertyTransform list
+
+ // Custom domain AST
+ type Property = Property of string
+ type PropertyTransform = PropertyTransform of (Property * Property)
+ type Transformation = {properties:PropertyTransform list}
  type Document = {configuration:Transformation}
 
+ // Custom domain creator functions
  let property (s:string) = s |> Property
  let propertytransform (result:(Property * Property)) = result |> PropertyTransform
- let configuration result = result |> Transformation
- let document propertylist : Document = {configuration=propertylist}
+ let configuration result = { Transformation.properties=result }
+ let document propertylist : Document = { Document.configuration=propertylist }
+
+ // Json AST
+ type Json = 
+  | JBool of bool
+  | JString of string
+  | JNumber of float
+  | JNull
+  | JList of Json list
+  | JObject of Map<string, Json>
