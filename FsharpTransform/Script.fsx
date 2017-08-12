@@ -1,16 +1,15 @@
-﻿// Learn more about F# at http://fsharp.org. See the 'F# Tutorial' project
-// for more guidance on F# programming.
-#r "/Users/dickow/Projects/FsharpTransform/packages/FParsec.1.0.2/lib/net40-client/FParsecCS.dll"
+﻿#r "/Users/dickow/Projects/FsharpTransform/packages/FParsec.1.0.2/lib/net40-client/FParsecCS.dll"
 #r "/Users/dickow/Projects/FsharpTransform/packages/FParsec.1.0.2/lib/net40-client/FParsec.dll"
 #load "AST.fs"
 #load "Parser.fs"
 #load "Transform.fs"
 
 open FParsec
-open FsharpTransform.AST
-open FsharpTransform.Parser
-open FsharpTransform.Transform
+open FJsonTransform.AST
+open FJsonTransform.Parser
+open FJsonTransform.Transform
 
+// Example of how to use the library in its current state.
 let transformed = 
  let doc = 
   parseConfiguration @"/Users/dickow/Projects/FsharpTransform/FsharpTransform/transformConfig.json" 

@@ -25,8 +25,8 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-namespace FsharpTransform
-open FsharpTransform.AST
+namespace FJsonTransform
+open AST
 module Transform = 
  // Represent any Json token as a string
  let rec getStrRepr json = 

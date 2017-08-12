@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FsharpTransform", "FsharpTransform\FsharpTransform.fsproj", "{F584C6E7-F180-4CB1-9A71-40892D9AFC76}"
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FJsonTransform", "FsharpTransform\FJsonTransform.fsproj", "{F584C6E7-F180-4CB1-9A71-40892D9AFC76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

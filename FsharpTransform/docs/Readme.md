@@ -1,4 +1,4 @@
-﻿# FsharpTransform
+﻿# FJsonTransform
 
 ### The purpose of this library is to transform between two string representation of Json objects, using a configuration file written in Json. 
 
