@@ -25,8 +25,49 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-
 namespace FsharpTransform
-
+open FsharpTransform.AST
 module Transform = 
-    let a = ""
+ // Represent any Json token as a string
+ let rec getStrRepr json = 
+  match json with
+  | JNull -> "null"
+  | JNumber(f) -> sprintf "\"%f\"" f
+  | JBool(true) -> "true"
+  | JBool(false) -> "false"
+  | JString(s) -> sprintf "\"%s\"" s
+  | JList(l) -> 
+   l
+   |> List.map (fun item -> getStrRepr item)
+   |> String.concat ","
+   |> sprintf "[ %s ]"
+  | JObject(map) -> 
+   map
+   |> Map.fold (fun state key value -> sprintf "\"%s\" : %s" key (getStrRepr value) :: state) List.Empty
+   |> String.concat ","
+   |> sprintf "{ %s }"
+ 
+ let mapToJsonString map = 
+  map
+  |> Map.fold (fun state key value -> sprintf "\"%s\" : %s" key (getStrRepr value) :: state) List.Empty
+  |> String.concat ","
+  |> sprintf "{ %s }"
+ 
+ // Try to get the property from the map Some if found otherwise None
+ let tryGetProperty prop json = 
+  match json with
+  | JObject(properties) -> properties.TryFind prop
+  | _ -> None
+ 
+ let mapTransformer state (item : PropertyTransform) = 
+  let src = fstStr item
+  let dst = sndStr item
+  let propValue = tryGetProperty src (fst state)
+  match propValue with
+  | Some(jProp) -> (fst state, (snd state) |> Map.add dst jProp)
+  | None -> state
+ 
+ let transformJsonToMap (doc : Document) json = 
+  doc.configuration.properties
+  |> List.fold mapTransformer (json, Map.empty)
+  |> snd

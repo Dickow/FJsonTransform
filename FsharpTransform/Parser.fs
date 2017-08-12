@@ -119,7 +119,7 @@ module Parser =
      pjobject
      ]
 
- let pjson = ws >>. pjvalue >>. ws >>. eof
+ let pjson = ws >>. pjvalue .>> ws .>> eof
 
  let parseJsonString str = run pjson str
 

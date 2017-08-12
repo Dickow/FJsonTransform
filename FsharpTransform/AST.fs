@@ -32,6 +32,7 @@ module AST =
 
  // Custom domain AST
  type Property = Property of string
+  with member this.str = match this with (Property p) -> p
  type PropertyTransform = PropertyTransform of (Property * Property)
  type Transformation = {properties:PropertyTransform list}
  type Document = {configuration:Transformation}
@@ -41,6 +42,10 @@ module AST =
  let propertytransform (result:(Property * Property)) = result |> PropertyTransform
  let configuration result = { Transformation.properties=result }
  let document propertylist : Document = { Document.configuration=propertylist }
+
+ // Helper functions
+ let fstStr (PropertyTransform p) = fst(p).str
+ let sndStr (PropertyTransform p) = snd(p).str
 
  // Json AST
  type Json = 

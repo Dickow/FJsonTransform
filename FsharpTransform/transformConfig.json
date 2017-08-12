@@ -11,6 +11,10 @@
     {
       "src1": "fullname",
       "src2": "name"
+    },
+    {
+      "src1": "complexObj",
+      "src2": "obj"
     }
   ]
 }
