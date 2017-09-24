@@ -110,3 +110,31 @@ type TransformTests() =
         match result with
         | Some(value) -> failwith "Expected not to find any values"
         | None -> "" |> ignore
+    
+    [<Test>]
+    member this.TestInsertFlatStringValueInEmptyMap() = 
+        let value = JString("Hello World")
+        let result = insertValue "key" value (JObject(Map.empty))
+        let expected = Map.empty |> Map.add "key" value |> JObject
+        Assert.AreEqual(expected, result)
+    
+    [<Test>]
+    member this.TestInsertFlatObjectValueInEmptyMap() = 
+        let value = Map.empty |> Map.add "key" (JString("Hello world")) |> JObject
+        let result = insertValue "key" value (JObject(Map.empty))
+        let expected = Map.empty |> Map.add "key" (value) |> JObject
+        Assert.AreEqual(expected, result)
+        
+    [<Test>]
+    member this.TestInsertRelationStringValueInEmptyMap() = 
+        let value = JString("Hello World")
+        let result = insert (Relation(["dest1"; "dest2"])) value (JObject(Map.empty))
+        let expected = (Map.empty |> Map.add "dest1" (JObject(Map.empty |> Map.add "dest2" value))) |> JObject
+        Assert.AreEqual(expected, result)
+    
+    [<Test>]
+    member this.TestInsertRelationObjectValueInEmptyMap() = 
+        let value = Map.empty |> Map.add "key" (JString "Hello World") |> JObject
+        let result = insert (Relation(["dest1"; "dest2"])) value (JObject(Map.empty))
+        let expected = (Map.empty |> Map.add "dest1" (JObject(Map.empty |> Map.add "dest2" value))) |> JObject
+        Assert.AreEqual(expected, result)

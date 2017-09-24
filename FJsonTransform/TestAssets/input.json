@@ -13,5 +13,5 @@
       }
     }
   },
-  "flatSource": "This simple value is mapped as property to an object"
+  "flatSource": "This was a flat source"
 }
