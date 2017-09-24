@@ -1,0 +1,20 @@
+﻿{
+  "transform": [
+    {
+      "source": "complexObj->val1",
+      "destination": "flattened"
+    },
+    {
+      "source": "simpleValue",
+      "destination": "destination"
+    },
+    {
+      "source": "superComplex->obj1->obj2->obj3",
+      "destination": "fairlyComplex->dst1->dst3"
+    },
+    {
+      "source": "flatSource",
+      "destination": "complexMapping->dst1->dst2"
+    }
+  ]
+}

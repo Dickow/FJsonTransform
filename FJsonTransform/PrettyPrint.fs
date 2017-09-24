@@ -27,34 +27,32 @@
 //
 
 namespace FJsonTransform
-
-module AST = 
-
- type PropertyRule = 
-  | Flat of string
-  | Relation of string list
-
- type DestinationRule = DestinationRule of PropertyRule
- type SourceRule = SourceRule of PropertyRule
- type Property = Property of (SourceRule * DestinationRule)
- type Document = {configuration:Property list}
-
- let propertyRule strList = 
-  match strList with
-  | [] -> failwith "destination rules must have at least one property satisfied"
-  | xlist when List.length xlist = 1 -> Flat xlist.[0]
-  | xlist -> Relation xlist
-
- let destinationRule strList = DestinationRule (propertyRule strList)
- let sourceRule strList = SourceRule (propertyRule strList)
- let propertyList (list:Property list) = list
- let document input = {configuration=input}
-
- // Json AST
- type Json = 
-  | JBool of bool
-  | JString of string
-  | JNumber of float
-  | JNull
-  | JList of Json list
-  | JObject of Map<string, Json>
+open AST
+module PrettyPrint =
+// Represent any Json token as a string
+ let rec getStrRepr json = 
+  match json with
+  | JNull -> "null"
+  | JNumber(f) -> sprintf "\"%f\"" f
+  | JBool(true) -> "true"
+  | JBool(false) -> "false"
+  | JString(s) -> sprintf "\"%s\"" s
+  | JList(l) -> 
+   l
+   |> List.map (fun item -> getStrRepr item)
+   |> String.concat ","
+   |> sprintf "[ %s ]"
+  | JObject(map) -> 
+   map
+   |> Map.fold (fun state key value -> sprintf "\"%s\" : %s" key (getStrRepr value) :: state) List.Empty
+   |> String.concat ","
+   |> sprintf "{ %s }"
+ 
+ let mapToJsonString json = 
+  match json with 
+  | JObject(map) -> map
+                    |> Map.fold (fun state key value -> sprintf "\"%s\" : %s" key (getStrRepr value) :: state) List.Empty
+                    |> String.concat ","
+                    |> sprintf "{ %s }"
+  | _ -> System.String.Empty
+  

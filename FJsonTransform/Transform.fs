@@ -28,46 +28,60 @@
 namespace FJsonTransform
 open AST
 module Transform = 
- // Represent any Json token as a string
- let rec getStrRepr json = 
+
+ let hasProperty prop json =
   match json with
-  | JNull -> "null"
-  | JNumber(f) -> sprintf "\"%f\"" f
-  | JBool(true) -> "true"
-  | JBool(false) -> "false"
-  | JString(s) -> sprintf "\"%s\"" s
-  | JList(l) -> 
-   l
-   |> List.map (fun item -> getStrRepr item)
-   |> String.concat ","
-   |> sprintf "[ %s ]"
-  | JObject(map) -> 
-   map
-   |> Map.fold (fun state key value -> sprintf "\"%s\" : %s" key (getStrRepr value) :: state) List.Empty
-   |> String.concat ","
-   |> sprintf "{ %s }"
- 
- let mapToJsonString map = 
-  map
-  |> Map.fold (fun state key value -> sprintf "\"%s\" : %s" key (getStrRepr value) :: state) List.Empty
-  |> String.concat ","
-  |> sprintf "{ %s }"
- 
+  | JObject(properties) -> properties.ContainsKey prop
+  | _ -> false
+
  // Try to get the property from the map Some if found otherwise None
  let tryGetProperty prop json = 
   match json with
   | JObject(properties) -> properties.TryFind prop
   | _ -> None
- 
- let mapTransformer state (item : PropertyTransform) = 
-  let src = fstStr item
-  let dst = sndStr item
-  let propValue = tryGetProperty src (fst state)
-  match propValue with
-  | Some(jProp) -> (fst state, (snd state) |> Map.add dst jProp)
-  | None -> state
+
+ let getProperty prop json = 
+  match json with
+  | JObject(properties) -> properties.Item prop
+  | JString(_) | JBool(_) | JNull | JNumber(_) -> failwith "Cannot get index into anything but JObjects" 
+  | _ -> failwith "key not found"
+
+ let rec tryGetRelationProperty propList json = 
+  match propList with
+  | [] -> None
+  | [x] -> tryGetProperty x json
+  | x::xtail when hasProperty x json -> tryGetRelationProperty xtail (getProperty x json)
+  | _ -> None
+
+ let insertValue key (value:Json) json =
+  match json with
+  | JObject(map) -> if (Map.containsKey key map) then json else JObject(Map.add key value map)
+  | _ -> json 
+  
+ let ensureMapPath key json = 
+  match json with 
+  | JObject(map) -> if (Map.containsKey key map) then json else JObject(Map.add key (JObject(Map.empty)) map)
+  | _ -> json
+  
+ let rec insert key jValue json =
+   match key with
+   | Flat(value) -> insertValue value jValue json
+   | Relation(value) -> match value with
+                          | [] -> json
+                          | [x] -> insertValue x jValue json
+                          | x::xtail -> insertValue x (insert (Relation(xtail)) jValue (getProperty x (ensureMapPath x json))) json
+                         
+ let testAndInsert dst (prop:Json option) map = 
+  match prop with
+  | Some(prop) -> insert dst prop map
+  | None -> map
+
+ let mapTransformer (json, map) (Property(SourceRule(src), DestinationRule(dst))) = 
+  match src with
+  | Flat(value) -> (json,testAndInsert dst (tryGetProperty value json) map)
+  | Relation(value) -> (json, testAndInsert dst (tryGetRelationProperty value json) map)
  
  let transformJsonToMap (doc : Document) json = 
-  doc.configuration.properties
-  |> List.fold mapTransformer (json, Map.empty)
+  doc.configuration 
+  |> List.fold mapTransformer (json, JObject(Map.empty)) 
   |> snd

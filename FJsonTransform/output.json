@@ -1,0 +1,1 @@
+{ "flattened" : "This is a simple value in an object","fairlyComplex" : { "dst1" : { "dst3" : { "prop2" : "This is cool and 'Hello World' btw!","prop1" : "390.000000" } } },"destination" : "2003.000000","complexMapping" : { "dst1" : { "dst2" : "This simple value is mapped as property to an object" } } }

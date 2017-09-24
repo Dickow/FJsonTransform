@@ -1,7 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FJsonTransform", "FJsonTransform\FJsonTransform.fsproj", "{F584C6E7-F180-4CB1-9A71-40892D9AFC76}"
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FJsonTransform", "FJsonTransform\FJsonTransform.fsproj", "{F584C6E7F1804CB19A7140892D9AFC76}"
+EndProject
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "FJsonTransformTest", "FJsonTransformTest\FJsonTransformTest.fsproj", "{4E6680D1-71A4-4CA4-8DCC-1679CB5D3A3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,23 +11,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F584C6E7-F180-4CB1-9A71-40892D9AFC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F584C6E7-F180-4CB1-9A71-40892D9AFC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F584C6E7-F180-4CB1-9A71-40892D9AFC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F584C6E7-F180-4CB1-9A71-40892D9AFC76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6680D1-71A4-4CA4-8DCC-1679CB5D3A3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6680D1-71A4-4CA4-8DCC-1679CB5D3A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6680D1-71A4-4CA4-8DCC-1679CB5D3A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6680D1-71A4-4CA4-8DCC-1679CB5D3A3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F584C6E7F1804CB19A7140892D9AFC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F584C6E7F1804CB19A7140892D9AFC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.TextStylePolicy = $1
-		$1.TabWidth = 1
-		$1.TabsToSpaces = True
-		$1.IndentWidth = 1
 		$1.NoTabsAfterNonTabs = True
 		$1.scope = text/x-fsharp
+		$1.TabsToSpaces = True
 		$0.FSharpFormattingPolicy = $2
 		$2.DefaultFormat = $3
-		$3.IndentOnTryWith = True
-		$3.ReorderOpenDeclaration = True
+		$3.IndentOnTryWith = False
+		$3.ReorderOpenDeclaration = False
 		$3.SpaceAfterComma = True
 		$3.SpaceAfterSemicolon = True
 		$3.SpaceAroundDelimiter = True
@@ -33,5 +35,13 @@ Global
 		$3.SpaceBeforeColon = True
 		$3.__added = 0
 		$2.scope = text/x-fsharp
+		$0.DotNetNamingPolicy = $4
+		$4.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.StandardHeader = $5
+		$5.Text = @\n Author:\n   ${AuthorName} ${AuthorEmail}\n\n Copyright (c) ${Year}\n\n All rights reserved.\n\n Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in\n      the documentation and/or other materials provided with the distribution.\n    * Neither the name of the [ORGANIZATION] nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n
+		$0.TextStylePolicy = $6
+		$6.FileWidth = 80
+		$6.TabsToSpaces = True
+		$6.scope = text/plain
 	EndGlobalSection
 EndGlobal

@@ -34,11 +34,13 @@ open AST
 module Parser = 
  let ws = spaces
  let str s = pstring s
- let quoteString s = between (str "\"") (str "\"") (str s)
 
- let listBetweenStrings sOpen sClose pElement f =
+
+ let listBetweenStrings sOpen sClose pElement delimiter f =
      between (str sOpen) (str sClose)
-             (ws >>. sepBy (pElement .>> ws) (str "," >>. ws) |>> f)
+             (ws >>. sepBy (pElement .>> ws) (str delimiter >>. ws) |>> f)
+
+
 
  // Code from the FParsec tutorial to parse a string literal
  let stringLiteral =
@@ -66,18 +68,20 @@ module Parser =
      between (str "\"") (str "\"")
              (stringsSepBy normalCharSnippet escapedCharSnippet)
  
+ let quoteString s = between (str "\"") (str "\"") (str s)
+ let pkey key = quoteString key >>. ws >>. str ":"
+ let pruleValue ctor = ws >>. (listBetweenStrings "\"" "\"" (many1Chars (noneOf "\"->")) "->" ctor) .>> ws
 
  // Custom language using Json format 
  // Create the parsers from the bottom up
- let psource src = quoteString src >>. ws >>. str ":" >>. (ws >>. stringLiteral) |>> property
- let psource1 = psource "src1"
- let psource2 = psource "src2"
- let pproperty = str "{" >>. ws >>. (psource1) .>> ws .>> str "," .>> ws .>>. (psource2) .>> ws .>> str "}" |>> propertytransform
- let ppropertylist = between (str "[") (str "]") (ws >>. sepBy (pproperty .>> ws) (str "," >>. ws) |>> configuration)
- let pdocument = str "{" >>. ws >>. quoteString "transform" >>. ws >>. str ":" >>. ws >>. (ppropertylist) .>> ws .>> str "}" .>> ws .>> eof |>> document
+ let prule src ctor = pkey src >>. pruleValue ctor
+ let psource = prule "source" sourceRule
+ let pdestination = prule "destination" destinationRule
+ let pproperty = str "{" >>. ws >>. (psource) .>> ws .>> str "," .>> ws .>>. (pdestination) .>> ws .>> str "}" |>> Property
+ let ppropertylist = between (str "[") (str "]") (ws >>. sepBy (pproperty .>> ws) (str "," >>. ws)) |>> propertyList
+ let pdocument = str "{" >>. ws >>. pkey "transform" >>. ws >>. (ppropertylist) .>> ws .>> str "}" .>> ws .>> eof |>> document
 
- let parseConfiguration filePath encoding = 
-  runParserOnString pdocument () filePath (System.IO.File.ReadAllText(filePath, encoding))
+ let parseConfiguration filePath encoding = runParserOnString pdocument () filePath (System.IO.File.ReadAllText(filePath, encoding))
 
  // End of Custom language parser
 
@@ -100,13 +104,13 @@ module Parser =
  let pjnumber = pfloat |>> JNumber
 
  // Parse a Json list
- let pjlist = listBetweenStrings "[" "]" pjvalue JList
+ let pjlist = listBetweenStrings "[" "]" pjvalue "," JList
 
  // Parse a key value object in the json file
  let pkeyvalue = stringLiteral .>>. (ws >>. str ":" >>. ws >>. pjvalue)
 
  // Parse a Json object in the Json file
- let pjobject = listBetweenStrings "{" "}" pkeyvalue (Map.ofList >> JObject)
+ let pjobject = listBetweenStrings "{" "}" pkeyvalue "," (Map.ofList >> JObject)
 
  pjvalueref := choice 
      [

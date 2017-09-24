@@ -1,0 +1,17 @@
+﻿{
+  "complexObj": {
+    "val1": "This is a simple value in an object"
+  },
+  "simpleValue": 2003,
+  "superComplex":{
+    "obj1":{
+      "obj2":{
+        "obj3":{
+          "prop1": 390,
+          "prop2": "This is cool and 'Hello World' btw!"
+        }
+      }
+    }
+  },
+  "flatSource": "This simple value is mapped as property to an object"
+}
